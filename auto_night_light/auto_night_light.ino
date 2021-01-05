@@ -10,9 +10,8 @@ int roomDistance = 100;
 
 bool lightIsOn = false;
 
-int MAIN_CYCLE_DELAY = 500;
-int TIMER_MULTIPLIER = 2;
-
+int MAIN_CYCLE_DELAY = 250;
+// int TIMER_MULTIPLIER = 4;
 int LIGHT_OFF_TIMER_VALUE = 5000;
 int lightOffTimer = 0;
 
@@ -21,7 +20,7 @@ void setup() {
   //Serial.begin(9600);
   
   pinMode(led1, OUTPUT);
-  
+  digitalWrite(led1, LOW);
 }
 
 
@@ -33,17 +32,23 @@ void loop() {
 
   if (roomSensorDistance < roomDistance) {
 
-    digitalWrite(led1, HIGH);
-    lightIsOn = true;
+  	if (!lightIsOn) {
+	    digitalWrite(led1, HIGH);
+	    lightIsOn = true;
+  	}
+
     lightOffTimer = LIGHT_OFF_TIMER_VALUE;
 
   } else {
 
-  	if (lightOffTimer > 0) {
-  		lightOffTimer = lightOffTimer - (MAIN_CYCLE_DELAY * TIMER_MULTIPLIER);
-  	} else {
-    	digitalWrite(led1, LOW);
-    	lightIsOn = false;
+  	if (lightIsOn) {
+
+	  	if (lightOffTimer > 0) {
+	  		lightOffTimer = lightOffTimer - MAIN_CYCLE_DELAY;
+	  	} else {
+	    	digitalWrite(led1, LOW);
+	    	lightIsOn = false;
+	  	}
   	}
 
   }
