@@ -89,7 +89,7 @@ void lightOff() {
 
 
 void setup() {
-  // Serial.begin(9600);
+	// Serial.begin(9600);
 
 	pinMode(led1, OUTPUT);
 	pinMode(led2, OUTPUT);
@@ -149,6 +149,12 @@ void loop() {
 		// Serial.println(sensors[i].currentDistance);
 
 		if (sensors[i].currentDistance < sensors[i].thresholdDistance) {
+
+			// если 0, то вероятно датчик в обрыве
+			// пропускаем, иначе будет вечная тревога
+			if (sensors[i].currentDistance == 0) {
+				continue;
+			}
 
 			if (sensors[i].alarmCounter < MAX_ALARM_COUNT - 1) {
 				sensors[i].alarmCounter = sensors[i].alarmCounter + 1;
