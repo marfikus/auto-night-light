@@ -87,6 +87,30 @@ void lightOff() {
 	}
 }
 
+void greetingBlink() {
+
+	for (int i = 0; i < 2; i++) {
+		digitalWrite(led1, HIGH);
+		delay(200);
+		digitalWrite(led2, HIGH);
+		digitalWrite(led1, LOW);
+		delay(200);
+		digitalWrite(led3, HIGH);
+		digitalWrite(led2, LOW);
+		delay(200);
+		digitalWrite(led3, LOW);
+	}
+
+	delay(200);
+	digitalWrite(led1, HIGH);
+	digitalWrite(led2, HIGH);
+	digitalWrite(led3, HIGH);
+	delay(700);
+	digitalWrite(led1, LOW);
+	digitalWrite(led2, LOW);
+	digitalWrite(led3, LOW);
+}
+
 
 void setup() {
 	// Serial.begin(9600);
@@ -127,6 +151,8 @@ void setup() {
 	sensors[2].currentDistance = 0;
 	sensors[2].thresholdDistance = HALL_THRESHOLD_DISTANCE;
 	sensors[2].alarmCounter = 0;
+
+	greetingBlink();
 }
 
 
