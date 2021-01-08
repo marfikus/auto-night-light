@@ -3,21 +3,22 @@
 
 Ultrasonic ultrasonic(8, 9);
 
-int led1 = 0;
+int led1 = 3;
 
 int roomSensorDistance;
-int roomDistance = 100;
+int roomDistance = 200;
 
 bool lightIsOn = false;
 
-int MAIN_CYCLE_DELAY = 250;
+int MAIN_CYCLE_DELAY = 100;
 // int TIMER_MULTIPLIER = 4;
-int LIGHT_OFF_TIMER_VALUE = 5000;
+int LIGHT_OFF_TIMER_VALUE = 3000;
 int lightOffTimer = 0;
+int counter = 0;
 
 
 void setup() {
-  //Serial.begin(9600);
+  Serial.begin(9600);
   
   pinMode(led1, OUTPUT);
   digitalWrite(led1, LOW);
@@ -25,19 +26,26 @@ void setup() {
 
 
 void loop() {
- // Serial.print("Distance in CM: ");
- // Serial.println(ultrasonic.distanceRead());
-  
+  Serial.print("Distance in CM: ");
   roomSensorDistance = ultrasonic.distanceRead();
+  Serial.println(roomSensorDistance);
 
   if (roomSensorDistance < roomDistance) {
 
-  	if (!lightIsOn) {
-	    digitalWrite(led1, HIGH);
-	    lightIsOn = true;
+  	if (counter < 2) {
+  		counter = counter + 1;
+  	} else {
+
+	  	if (!lightIsOn) {
+		    digitalWrite(led1, HIGH);
+		    lightIsOn = true;
+	  	}
+
+	    lightOffTimer = LIGHT_OFF_TIMER_VALUE;
+	    counter = 0;
+
   	}
 
-    lightOffTimer = LIGHT_OFF_TIMER_VALUE;
 
   } else {
 
@@ -50,6 +58,7 @@ void loop() {
 	    	lightIsOn = false;
 	  	}
   	}
+  	counter = 0;
 
   }
   
