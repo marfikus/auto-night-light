@@ -26,7 +26,7 @@ const int MAIN_CYCLE_DELAY = 100;
 // длительность тревоги датчика в мс
 // (т.е как долго будет ещё свет гореть при отсутствии новых срабатываний)
 // (без учёта времени погасания)
-const int LIGHT_OFF_TIMER_VALUE = 3000;
+const long LIGHT_OFF_TIMER_VALUE = 90000;
 // шаг уменьшения яркости
 const int FADEOUT_STEP = 5;
 // количество срабатываний сенсора для тревоги (защита от ложных срабатываний)
@@ -35,9 +35,9 @@ const int MAX_ALARM_COUNT = 3;
 const int SENSORS_COUNT = 3;
 
 // расстояния сработки сенсоров в см (кухня, комната, коридор)
-const int KITCHEN_THRESHOLD_DISTANCE = 20;
-const int ROOM_THRESHOLD_DISTANCE = 15;
-const int HALL_THRESHOLD_DISTANCE = 25;
+const int KITCHEN_THRESHOLD_DISTANCE = 190;
+const int ROOM_THRESHOLD_DISTANCE = 170;
+const int HALL_THRESHOLD_DISTANCE = 280;
 
 // состояния сенсора
 enum sensorStates {
@@ -53,7 +53,7 @@ struct usSensor {
 	// текущее состояние сенсора
 	sensorStates state;
 	// таймер состояния тревоги
-	int timer;
+	long timer;
 	// текущее измеренное расстояние
 	int currentDistance;
 	// пороговое расстояние
