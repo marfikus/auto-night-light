@@ -27,15 +27,17 @@ const int MAIN_CYCLE_DELAY = 100;
 // (т.е как долго будет ещё свет гореть при отсутствии новых срабатываний)
 // (без учёта времени погасания)
 const long LIGHT_OFF_TIMER_VALUE = 90000;
+// const long LIGHT_OFF_TIMER_VALUE = 3000; // для настройки
 // шаг уменьшения яркости
 const int FADEOUT_STEP = 5;
+// const int FADEOUT_STEP = 50; // для настройки
 // количество срабатываний сенсора для тревоги (защита от ложных срабатываний)
 const int MAX_ALARM_COUNT = 3;
 // количество сенсоров
 const int SENSORS_COUNT = 3;
 
 // расстояния сработки сенсоров в см (кухня, комната, коридор)
-const int KITCHEN_THRESHOLD_DISTANCE = 190;
+const int KITCHEN_THRESHOLD_DISTANCE = 185;
 const int ROOM_THRESHOLD_DISTANCE = 170;
 const int HALL_THRESHOLD_DISTANCE = 280;
 
