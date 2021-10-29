@@ -41,6 +41,14 @@ const int KITCHEN_THRESHOLD_DISTANCE = 180;
 const int ROOM_THRESHOLD_DISTANCE = 160;
 const int HALL_THRESHOLD_DISTANCE = 280;
 
+// максимальное время включенного освещения в минутах
+// (на случай зависания, по достижении - перезагрузка)
+const int LIGHT_ON_MAX_TIME = 20;
+// const int LIGHT_ON_MAX_TIME = 1; // для настройки
+
+long light_on_counter = 0;
+long light_on_max_counter = 0;
+
 // состояния сенсора
 enum sensorStates {
 	NORMAL,
@@ -161,6 +169,8 @@ void greetingBlink() {
 	digitalWrite(led3, LOW);
 }
 
+// программная перезагрузка (при зависании датчиков)
+void(* resetFunc) (void) = 0;
 
 void setup() {
 	/* разная инициализация... */
@@ -203,6 +213,14 @@ void setup() {
 	sensors[2].currentDistance = 0;
 	sensors[2].thresholdDistance = HALL_THRESHOLD_DISTANCE;
 	sensors[2].alarmCounter = 0;
+
+	// переводим макс время свечения из минут в количество итераций главного цикла
+	light_on_max_counter = round((LIGHT_ON_MAX_TIME * 60L * 1000L) / MAIN_CYCLE_DELAY);
+	// light_on_max_counter = 600;
+	// коррекция погрешности таймера ардуино
+	light_on_max_counter = light_on_max_counter - round(light_on_max_counter * 0.4);
+	// Serial.println(light_on_max_counter);
+	light_on_counter = 0;
 
 	// поморгаем)
 	greetingBlink();
@@ -285,6 +303,19 @@ void loop() {
 	// вызываем процедуру выключения освещения
 	// (которая сама поймёт, надо ли его выключать)
 	lightOff();
-	// ну и ждём следующую итерацию)
+
+	// защита от зависания девайса (иногда бывает, возможно один из датчиков глючит).
+	// Считаем итерации с включенным светом, если дошли до максимального значения,
+	// то перезагружаем девайс
+	if (lightingState == ON) {
+		light_on_counter++;
+		if (light_on_counter >= light_on_max_counter) {
+			resetFunc();
+		}
+	} else {
+		light_on_counter = 0;
+	}
+
+	// ждём следующую итерацию
 	delay(MAIN_CYCLE_DELAY);
 }
