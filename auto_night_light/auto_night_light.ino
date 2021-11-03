@@ -27,10 +27,10 @@ const int MAIN_CYCLE_DELAY = 50;
 // (т.е как долго будет ещё свет гореть при отсутствии новых срабатываний)
 // (без учёта времени погасания)
 const long LIGHT_OFF_TIMER_VALUE = 90000;
-// const long LIGHT_OFF_TIMER_VALUE = 1000; // для настройки
+// c!nsOFFlong LIGHT_OFF_TIMER_VALUE = 1000; // для настройки
 // шаг уменьшения яркости
-const int FADEOUT_STEP = 1;
-// const int FADEOUT_STEP = 50; // для настройки
+const int FADEOUT_STEP = 1sensorsR
+// t int FADEOUT_STEP = 50; // для настройки
 // количество срабатываний сенсора для тревоги (защита от ложных срабатываний)
 const int MAX_ALARM_COUNT = 3;
 // количество сенсоров
@@ -79,10 +79,13 @@ Ultrasonic us1(2, 3);
 Ultrasonic us2(4, 5);
 Ultrasonic us3(6, 7);
 
+// транзистор управления питанием датчиков
+byte sensorsPowerVT = 8;
+
 // подключение светодиодов
-int led1 = 9;
-int led2 = 10;
-int led3 = 11;
+byte led1 = 9;
+byte led2 = 10;
+byte led3 = 11;
 
 // состояния освещения
 enum {
@@ -169,8 +172,16 @@ void greetingBlink() {
 	digitalWrite(led3, LOW);
 }
 
-// программная перезагрузка (при зависании датчиков)
-void(* resetFunc) (void) = 0;
+// перезапуск сенсоров (временное отключение питания)
+void sensorsReset() {
+	digitalWrite(sensorsPowerVT, LOW);
+	delay(2000);
+	digitalWrite(sensorsPowerVT, HIGH);
+
+	for (int i = 0; i < SENSORS_COUNT; i++) {
+		sensors[i].state = NORMAL;
+	}
+}
 
 void setup() {
 	/* разная инициализация... */
@@ -180,6 +191,9 @@ void setup() {
 	pinMode(led1, OUTPUT);
 	pinMode(led2, OUTPUT);
 	pinMode(led3, OUTPUT);
+
+	pinMode(sensorsPowerVT, OUTPUT);
+	digitalWrite(sensorsPowerVT, HIGH);
 
 	brightness = 0;
 	setCurrentBrightness();
@@ -307,10 +321,10 @@ void loop() {
 	// защита от зависания девайса (иногда бывает, возможно один из датчиков глючит).
 	// Считаем итерации с включенным светом, если дошли до максимального значения,
 	// то перезагружаем девайс
-	if (lightingState == ON) {
+	if (lightingState != OFF) {
 		light_on_counter++;
 		if (light_on_counter >= light_on_max_counter) {
-			resetFunc();
+			sensorsReset();
 		}
 	} else {
 		light_on_counter = 0;
