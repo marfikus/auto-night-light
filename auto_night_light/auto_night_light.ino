@@ -23,16 +23,20 @@
 
 // частота опроса датчиков в мс
 const int MAIN_CYCLE_DELAY = 50;
+
 // длительность тревоги датчика в мс
 // (т.е как долго будет ещё свет гореть при отсутствии новых срабатываний)
 // (без учёта времени погасания)
 const long LIGHT_OFF_TIMER_VALUE = 90000;
-// c!nsOFFlong LIGHT_OFF_TIMER_VALUE = 1000; // для настройки
+// long LIGHT_OFF_TIMER_VALUE = 1000; // для настройки
+
 // шаг уменьшения яркости
-const int FADEOUT_STEP = 1sensorsR
-// t int FADEOUT_STEP = 50; // для настройки
+const int FADEOUT_STEP = 1;
+// int FADEOUT_STEP = 50; // для настройки
+
 // количество срабатываний сенсора для тревоги (защита от ложных срабатываний)
 const int MAX_ALARM_COUNT = 3;
+
 // количество сенсоров
 const int SENSORS_COUNT = 3;
 
@@ -42,8 +46,8 @@ const int ROOM_THRESHOLD_DISTANCE = 160;
 const int HALL_THRESHOLD_DISTANCE = 280;
 
 // максимальное время включенного освещения в минутах
-// (на случай зависания, по достижении - перезагрузка)
-const int LIGHT_ON_MAX_TIME = 20;
+// (на случай зависания, по достижении - перезагрузка датчиков)
+const int LIGHT_ON_MAX_TIME = 15;
 // const int LIGHT_ON_MAX_TIME = 1; // для настройки
 
 long light_on_counter = 0;
@@ -80,7 +84,7 @@ Ultrasonic us2(4, 5);
 Ultrasonic us3(6, 7);
 
 // транзистор управления питанием датчиков
-byte sensorsPowerVT = 8;
+byte sensorsPowerVT = A0;
 
 // подключение светодиодов
 byte led1 = 9;
@@ -172,10 +176,11 @@ void greetingBlink() {
 	digitalWrite(led3, LOW);
 }
 
-// перезапуск сенсоров (временное отключение питания)
 void sensorsReset() {
+	/* перезапуск сенсоров (временное отключение питания) */
+
 	digitalWrite(sensorsPowerVT, LOW);
-	delay(2000);
+	delay(3000);
 	digitalWrite(sensorsPowerVT, HIGH);
 
 	for (int i = 0; i < SENSORS_COUNT; i++) {
@@ -230,7 +235,7 @@ void setup() {
 
 	// переводим макс время свечения из минут в количество итераций главного цикла
 	light_on_max_counter = round((LIGHT_ON_MAX_TIME * 60L * 1000L) / MAIN_CYCLE_DELAY);
-	// light_on_max_counter = 600;
+	// light_on_max_counter = 200; // 10 сек (для настройки)
 	// коррекция погрешности таймера ардуино
 	light_on_max_counter = light_on_max_counter - round(light_on_max_counter * 0.4);
 	// Serial.println(light_on_max_counter);
@@ -318,13 +323,14 @@ void loop() {
 	// (которая сама поймёт, надо ли его выключать)
 	lightOff();
 
-	// защита от зависания девайса (иногда бывает, возможно один из датчиков глючит).
+	// защита от зависания датчиков (иногда бывает).
 	// Считаем итерации с включенным светом, если дошли до максимального значения,
-	// то перезагружаем девайс
+	// то перезапускаем датчики
 	if (lightingState != OFF) {
 		light_on_counter++;
 		if (light_on_counter >= light_on_max_counter) {
 			sensorsReset();
+			light_on_counter = 0;
 		}
 	} else {
 		light_on_counter = 0;
