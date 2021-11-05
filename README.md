@@ -9,5 +9,7 @@
 [ВКонтакте](https://vk.com/@marfikus_notes-auto-night-light)  
 [LiveJournal](https://marfikus.livejournal.com/19973.html)
 
+В этой ветке немного модифицированный вариант: добавлена автоматическая перезагрузка датчиков при их зависании. Также немного изменена схема: добавлен транзистор, который позволяет кратковременно отключать питание датчиков. Возможно, что это конкретно мой случай (один из датчиков иногда глючит), а в общем всё должно корректно работать по схеме и алгоритму, представленным в главной ветке (`main`).
+
 Электрическая схема:
-![Schematic_auto_night_light_2021-04-06](/Schematic_auto_night_light_2021-04-06.png "Schematic_auto_night_light_2021-04-06")
+![Schematic_auto_night_light_with_sensors_power_vt](/Schematic_auto_night_light_with_sensors_power_vt.png "Schematic_auto_night_light_with_sensors_power_vt.png")
