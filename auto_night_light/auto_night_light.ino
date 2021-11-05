@@ -50,8 +50,8 @@ const int HALL_THRESHOLD_DISTANCE = 280;
 const int LIGHT_ON_MAX_TIME = 15;
 // const int LIGHT_ON_MAX_TIME = 1; // для настройки
 
-long light_on_counter = 0;
-long light_on_max_counter = 0;
+long lightOnCounter = 0;
+long lightOnMaxCounter = 0;
 
 // состояния сенсора
 enum sensorStates {
@@ -234,12 +234,12 @@ void setup() {
 	sensors[2].alarmCounter = 0;
 
 	// переводим макс время свечения из минут в количество итераций главного цикла
-	light_on_max_counter = round((LIGHT_ON_MAX_TIME * 60L * 1000L) / MAIN_CYCLE_DELAY);
-	// light_on_max_counter = 200; // 10 сек (для настройки)
+	lightOnMaxCounter = round((LIGHT_ON_MAX_TIME * 60L * 1000L) / MAIN_CYCLE_DELAY);
+	// lightOnMaxCounter = 200; // 10 сек (для настройки)
 	// коррекция погрешности таймера ардуино
-	light_on_max_counter = light_on_max_counter - round(light_on_max_counter * 0.4);
-	// Serial.println(light_on_max_counter);
-	light_on_counter = 0;
+	lightOnMaxCounter = lightOnMaxCounter - round(lightOnMaxCounter * 0.4);
+	// Serial.println(lightOnMaxCounter);
+	lightOnCounter = 0;
 
 	// поморгаем)
 	greetingBlink();
@@ -327,13 +327,13 @@ void loop() {
 	// Считаем итерации с включенным светом, если дошли до максимального значения,
 	// то перезапускаем датчики
 	if (lightingState != OFF) {
-		light_on_counter++;
-		if (light_on_counter >= light_on_max_counter) {
+		lightOnCounter++;
+		if (lightOnCounter >= lightOnMaxCounter) {
 			sensorsReset();
-			light_on_counter = 0;
+			lightOnCounter = 0;
 		}
 	} else {
-		light_on_counter = 0;
+		lightOnCounter = 0;
 	}
 
 	// ждём следующую итерацию
