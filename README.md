@@ -5,7 +5,8 @@
 
 Ультразвуковые датчики были использованы за неимением датчиков движения. Но в общем со своей задачей они пока справляются, а потом можно будет заменить, для большей точности).
 
-Статья про то, как всё это создавалось:  
+Статья про то, как всё это создавалось:
+[Яндекс.Дзен](https://zen.yandex.ru/media/id/61672dfc62ecc820c3e4dc43/avtomaticheskii-nochnik-na-arduino-61de45852a8d9063787a83b4)  
 [ВКонтакте](https://vk.com/@marfikus_notes-auto-night-light)  
 [LiveJournal](https://marfikus.livejournal.com/19973.html)
 
